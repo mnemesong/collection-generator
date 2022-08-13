@@ -1,0 +1,42 @@
+{
+    "name": "mnemesong/collection-generator",
+    "description": "Strictly-typed collections generator tool",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mnemesong\\CollectionGenerator\\": "src/",
+            "Mnemesong\\CollectionGeneratorTest\\": "test-unit/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Pantagruel74",
+            "email": "tostar74@mail.ru"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "phpstan/phpstan": "*",
+        "phpstan/phpstan-webmozart-assert": "*",
+        "phpstan/extension-installer": "*"
+    },
+    "scripts": {
+        "test:unit": "phpunit test-unit",
+        "lint:src": "phpstan analyse src --level 9",
+        "lint:unit": "phpstan analyse test-unit --level 5"
+    },
+    "bin": [
+        "collection-generator"
+    ],
+    "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        }
+    }
+}

@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+if(count($argv) < 2) {
+    throw new RuntimeException("Not point class for collection generation");
+}
+
+$generatingClass = end($argv);
+
+$autoloadFile = null;
+if (isset($GLOBALS['_composer_autoload_path'])) {
+    $autoloadFile = $GLOBALS['_composer_autoload_path'];
+    unset($GLOBALS['_composer_autoload_path']);
+} else {
+    foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+        if (file_exists($file)) {
+            $autoloadFile = $file;
+            break;
+        }
+    }
+    unset($file);
+}
+
+require_once $autoloadFile;
+
+use Mnemesong\CollectionGenerator\CollectionGenerator;
+
+try {
+    (new CollectionGenerator())->generateForClass($generatingClass);
+    echo "\nSuccess!\n";
+} catch (\Mnemesong\CollectionGenerator\exceptions\EmptyClassException $e) {
+    echo "\nClass " . $generatingClass . " not exist!\n";
+}
