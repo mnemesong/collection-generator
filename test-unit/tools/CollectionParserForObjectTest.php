@@ -1,4 +1,6 @@
 <?php
+namespace Mnemesong\CollectionGeneratorTest\tools;
+
 use Mnemesong\CollectionGeneratorTest\tools\stubs\CollectionParserStub;
 use Mnemesong\CollectionGeneratorTest\tools\stubs\SomeNewObject;
 

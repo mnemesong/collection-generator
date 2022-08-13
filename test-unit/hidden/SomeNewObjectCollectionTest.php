@@ -1,6 +1,10 @@
 <?php
+namespace Mnemesong\CollectionGeneratorTest\hidden;
 
+use Iterator;
 use Mnemesong\CollectionGeneratorTest\tools\stubs\SomeNewObject;
+use RuntimeException;
+use TypeError;
 
 class SomeNewObjectCollectionTest extends \PHPUnit\Framework\TestCase
 {

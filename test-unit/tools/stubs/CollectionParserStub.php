@@ -1,5 +1,4 @@
 <?php
-
 namespace Mnemesong\CollectionGeneratorTest\tools\stubs;
 
 use Mnemesong\CollectionGenerator\tools\CollectionParser;

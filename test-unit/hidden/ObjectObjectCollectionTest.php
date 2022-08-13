@@ -1,8 +1,12 @@
 <?php
 declare(strict_types = 0);
+namespace Mnemesong\CollectionGeneratorTest\hidden;
 
+use ErrorException;
+use Iterator;
 use Mnemesong\CollectionGenerator\hidden\ObjectObject;
 use Mnemesong\CollectionGenerator\hidden\collection\ObjectObjectCollection;
+use RuntimeException;
 
 class ObjectObjectCollectionTest extends \PHPUnit\Framework\TestCase
 {
