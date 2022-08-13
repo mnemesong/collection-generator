@@ -74,14 +74,6 @@ class SomeNewObjectCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($collection->getFirstIndex(), 0);
     }
 
-    public function testGetIterator()
-    {
-        $this->init();
-        $collection = new \Mnemesong\CollectionGeneratorTest\tools\stubs\collections\SomeNewObjectCollection($this->someNewObjects);
-        $this->assertTrue(is_subclass_of($collection->getIterator(), Iterator::class));
-        /* Iterator tests placed into ObjectObjectCollectionIteratorTest class */
-    }
-
     public function testSerialize()
     {
         $this->init();

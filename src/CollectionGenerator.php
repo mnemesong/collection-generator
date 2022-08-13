@@ -7,6 +7,8 @@ use Mnemesong\CollectionGenerator\tools\CollectionParser;
 class CollectionGenerator
 {
     /**
+     * @param class-string $class
+     * @throws \ReflectionException
      * @throws exceptions\EmptyClassException
      */
     public function generateForClass(string $class): void
