@@ -1,4 +1,4 @@
-<h1>Pantagruel74/CollectionGenerator</h1>
+<h1>Mnemesong/CollectionGenerator</h1>
 
 ----
 <h2>Language / Язык</h2>
@@ -194,11 +194,11 @@ multiple elements.</p>
 <h3>ENG</h3>
 <h4>Install via Composer</h4>
 <ul>
-    <li>In the project folder, run the command: <b>composer require "pantagruel74/collection-generator"</b></li>
-    <li>The package will be installed to the <b>vendor/pantagruel74/collection-generator</b> folder and will be available by namespace
+    <li>In the project folder, run the command: <b>composer require "mnemesong/collection-generator"</b></li>
+    <li>The package will be installed to the <b>vendor/mnemesong/collection-generator</b> folder and will be available by namespace
         <b>Mnemesong\CollectionGenerator</b></li>
     <li>Alternatively, specify a package
-        <b>"pantagruel74/collection-generator": "*"</b> to the require section of the composer.json file and 
+        <b>"mnemesong/collection-generator": "*"</b> to the require section of the composer.json file and 
         run the command: <b>composer update</b></li>
 </ul>
 <h4>Usage with composer CLI (terminal)</h4>
@@ -233,10 +233,10 @@ It is possible to use the composer terminal to generate collections. For this:
 <h3>RUS</h3>
 <h4>Установка через Composer</h4>
 <ul>
-    <li>В папке проекта выполните команду: <b>composer require "pantagruel74/collection-generator"</b></li>
-    <li>Пакет установится в папку <b>vendor/pantagruel74/collection-generator</b> и будет доступен по namespace'у 
+    <li>В папке проекта выполните команду: <b>composer require "mnemesong/collection-generator"</b></li>
+    <li>Пакет установится в папку <b>vendor/mnemesong/collection-generator</b> и будет доступен по namespace'у 
         <b>Mnemesong\CollectionGenerator</b></li>
-    <li>В качестве альтернативного способа, укажите пакет <b>"pantagruel74/collection-generator": "*"</b> 
+    <li>В качестве альтернативного способа, укажите пакет <b>"mnemesong/collection-generator": "*"</b> 
         в секцию require фала composer.json и выполните команду: <b>composer update</b></li>
 </ul>
 <h4>Использование с помощью composer CLI (терминала)</h4>
