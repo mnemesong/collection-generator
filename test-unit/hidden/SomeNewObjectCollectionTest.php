@@ -27,6 +27,7 @@ class SomeNewObjectCollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($collection->getAll(), $this->someNewObjects);
 
         $this->expectException(TypeError::class);
+        /* @phpstan-ignore-next-line  */
         $collection = new \Mnemesong\CollectionGeneratorTest\tools\stubs\collections\SomeNewObjectCollection([1, 30]);
     }
 
