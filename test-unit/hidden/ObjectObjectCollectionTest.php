@@ -73,19 +73,19 @@ class ObjectObjectCollectionTest extends \PHPUnit\Framework\TestCase
     {
         $this->init();
         $collection = new ObjectObjectCollection($this->arrayOfObjects);
+        $collection->removeAll(new ObjectObject('c234'));
 
-        $this->assertEquals($collection->removeAll(new ObjectObject('c234')), 2);
         $this->assertEquals($collection->getAll(), [
             new ObjectObject('cg'),
             new ObjectObject('ax7w84'),
         ]);
 
-        $this->assertEquals($collection->removeAll(new ObjectObject('ax7w84')), 1);
+        $collection = $collection->removeAll(new ObjectObject('ax7w84'));
         $this->assertEquals($collection->getAll(), [
             new ObjectObject('cg'),
         ]);
 
-        $this->assertEquals($collection->removeAll(new ObjectObject('dsf78')), 0);
+        $collection->removeAll(new ObjectObject('dsf78'));
         $this->assertEquals($collection->getAll(), [
             new ObjectObject('cg'),
         ]);
