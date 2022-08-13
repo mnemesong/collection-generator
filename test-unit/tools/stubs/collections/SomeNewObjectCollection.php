@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Mnemesong\CollectionGeneratorTest\tools\stubs\collections;
 
-use Mnemesong\CollectionGenerator\exceptions\SortException;
 use Mnemesong\CollectionGeneratorTest\tools\stubs\SomeNewObject;
 use Webmozart\Assert\Assert;
 
@@ -263,11 +262,12 @@ class SomeNewObjectCollection implements \Countable, \JsonSerializable
     /**
      * @param callable $sortFunc
      * @return $this
+     * @throws \ErrorException
      */
     public function sort(callable $sortFunc): self
     {
         if(uasort($this->objects, $sortFunc) === false) {
-            throw new SortException('Error while resorting collection');
+            throw new \ErrorException('Error while resorting collection');
         }
         $this->objects = array_values($this->objects);
         return $this;
