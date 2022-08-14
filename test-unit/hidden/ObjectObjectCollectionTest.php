@@ -3,18 +3,17 @@ declare(strict_types = 0);
 namespace Mnemesong\CollectionGeneratorTest\hidden;
 
 use ErrorException;
-use Iterator;
 use Mnemesong\CollectionGenerator\hidden\ObjectObject;
 use Mnemesong\CollectionGenerator\hidden\collection\ObjectObjectCollection;
+use Mnemesong\CollectionGeneratorTest\tools\stubs\SomeNewObject;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class ObjectObjectCollectionTest extends \PHPUnit\Framework\TestCase
+class ObjectObjectCollectionTest extends TestCase
 {
-    protected array $arrayOfObjects;
-
-    public function init()
+    public static function getArrayObjects(): array
     {
-        $this->arrayOfObjects = [
+        return [
             new ObjectObject('c234'),
             new ObjectObject('cg'),
             new ObjectObject('c234'),
@@ -24,289 +23,293 @@ class ObjectObjectCollectionTest extends \PHPUnit\Framework\TestCase
 
     public function testConstruct()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals($collection->getAll(), $this->arrayOfObjects);
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->assertEquals($collection->getAll(), self::getArrayObjects());
     }
 
     public function testAdd()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $collection->add(new ObjectObject('as7d8'));
-        $this->assertEquals($collection->getAll(), [
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $newCollection = $collection
+            ->withNewOneItem(new ObjectObject('as7d8'))
+            ->withNewOneItem(new ObjectObject('v1v51'));
+
+        //Test objects head been added successfull
+        $this->assertEquals([
             new ObjectObject('c234'),
             new ObjectObject('cg'),
             new ObjectObject('c234'),
             new ObjectObject('ax7w84'),
             new ObjectObject('as7d8'),
-        ]);
-    }
+            new ObjectObject('v1v51')
+        ], $newCollection->getAll());
 
-    public function testGetIndex()
-    {
-        $this->init();
-        $collection = new class($this->arrayOfObjects) extends ObjectObjectCollection {
-            public function getIndex(ObjectObject $object): ?int
-            {
-                return parent::getIndex($object);
-            }
-        };
-        $this->assertEquals($collection->getIndex(new ObjectObject('c234')), 0);
-        $this->assertEquals($collection->getIndex(new ObjectObject('ax7w84')), 3);
-        $this->assertNull($collection->getIndex(new ObjectObject('asf89as')));
-    }
-
-    public function testRemoveObject()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $collection->removeObject(new ObjectObject('c234'));
-        $this->assertEquals($collection->getAll(), [
+        //Test original collection unmutable
+        $this->assertEquals([
+            new ObjectObject('c234'),
             new ObjectObject('cg'),
             new ObjectObject('c234'),
             new ObjectObject('ax7w84'),
-        ]);
+        ], $collection->getAll());
     }
 
-    public function testRemoveAll()
+    public function testAddOneException()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $collection->removeAll(new ObjectObject('c234'));
-
-        $this->assertEquals($collection->getAll(), [
-            new ObjectObject('cg'),
-            new ObjectObject('ax7w84'),
-        ]);
-
-        $collection = $collection->removeAll(new ObjectObject('ax7w84'));
-        $this->assertEquals($collection->getAll(), [
-            new ObjectObject('cg'),
-        ]);
-
-        $collection->removeAll(new ObjectObject('dsf78'));
-        $this->assertEquals($collection->getAll(), [
-            new ObjectObject('cg'),
-        ]);
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->expectException(\TypeError::class);
+        $newCollection = $collection
+            /* @phpstan-ignore-next-line */
+            ->withNewOneItem(new SomeNewObject('as7d8'));
     }
 
-    public function testGetAllIndexes()
+    public function addMany()
     {
-        $this->init();
-        $collection = new class($this->arrayOfObjects) extends ObjectObjectCollection {
-            public function getAllIndexes(ObjectObject $object): array
-            {
-                return parent::getAllIndexes($object);
-            }
-        };
-        $this->assertEquals($collection->getAllIndexes(new ObjectObject('c234')), [0, 2]);
-        $this->assertEquals($collection->getAllIndexes(new ObjectObject('ax7w84')), [3]);
-        $this->assertEquals($collection->getAllIndexes(new ObjectObject('asf89as')), []);
-    }
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $newCollection = $collection
+            ->withManyNewItems([new ObjectObject('as7d8')])
+            ->withManyNewItems([new ObjectObject('v1v51'), new ObjectObject('9871hkl')]);
 
-    public function testFilter()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $newCollection = $collection->filter(function (ObjectObject $item) {
-            return stripos($item->value, '4') !== false;
-        });
-        $this->assertEquals($newCollection->getAll(), [
+        //Test objects head been added successfull
+        $this->assertEquals([
             new ObjectObject('c234'),
+            new ObjectObject('cg'),
             new ObjectObject('c234'),
             new ObjectObject('ax7w84'),
-        ]);
-        $newCollection = $collection->filter(function (ObjectObject $item) {
-            return stripos($item->value, '23') !== false;
-        });
-        $this->assertEquals($newCollection->getAll(), [
+            new ObjectObject('as7d8'),
+            new ObjectObject('v1v51'),
+            new ObjectObject('9871hkl')
+        ], $newCollection->getAll());
+
+        //Test original collection unmutable
+        $this->assertEquals([
+            new ObjectObject('c234'),
+            new ObjectObject('cg'),
+            new ObjectObject('c234'),
+            new ObjectObject('ax7w84'),
+        ], $collection->getAll());
+    }
+
+    public function testAddManyException()
+    {
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->expectException(\InvalidArgumentException::class);
+        $newCollection = $collection
+            /* @phpstan-ignore-next-line */
+            ->withManyNewItems([new ObjectObject('9871hkl'), new SomeNewObject('as7d8')]);
+    }
+
+    public function testWithoutOneObjectLike()
+    {
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $newCollection = $collection
+            ->withoutObjectsLike(new ObjectObject('c234'), 1);
+
+        //Test removing
+        $this->assertEquals([
+            new ObjectObject('cg'),
+            new ObjectObject('c234'),
+            new ObjectObject('ax7w84'),
+        ], $newCollection->getAll());
+
+        //Test original collection hadn't been muted
+        $this->assertEquals([
+            new ObjectObject('c234'),
+            new ObjectObject('cg'),
+            new ObjectObject('c234'),
+            new ObjectObject('ax7w84'),
+        ], $collection->getAll());
+
+        $newCollection = $collection
+            ->withoutObjectsLike(new ObjectObject('c234'));
+
+        //Test unlimited removing
+        $this->assertEquals([
+            new ObjectObject('cg'),
+            new ObjectObject('ax7w84'),
+        ], $newCollection->getAll());
+
+        $newCollection = $collection
+            ->withoutObjectsLike(new ObjectObject('c234'), -1);
+
+        //Test reversed limit removing
+        $this->assertEquals([
+            new ObjectObject('c234'),
+            new ObjectObject('cg'),
+            new ObjectObject('ax7w84'),
+        ], $newCollection->getAll());
+    }
+
+    public function testFiltering()
+    {
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $newCollection = $collection
+            ->filteredBy(fn(ObjectObject $object) => (strlen($object->value) > 2));
+
+        //Test filtering
+        $this->assertEquals([
             new ObjectObject('c234'),
             new ObjectObject('c234'),
-        ]);
+            new ObjectObject('ax7w84'),
+        ], $newCollection->getAll());
+
+        //Test original collection hadn't been muted
+        $this->assertEquals([
+            new ObjectObject('c234'),
+            new ObjectObject('cg'),
+            new ObjectObject('c234'),
+            new ObjectObject('ax7w84'),
+        ], $collection->getAll());
     }
 
-    public function testMap()
+    public function testMapping()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $arrayMap = $collection->map(function (ObjectObject $object) {
-            return $object->value;
-        });
-        $this->assertEquals($arrayMap, [
-            'c234',
-            'cg',
-            'c234',
-            'ax7w84',
-        ]);
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $mapped = $collection
+            ->map(fn(ObjectObject $object) => ($object->value . '!'));
+
+        //Test filtering
+        $this->assertEquals([
+            'c234!',
+            'cg!',
+            'c234!',
+            'ax7w84!',
+        ], $mapped);
+
+        //Test original collection hadn't been muted
+        $this->assertEquals([
+            new ObjectObject('c234'),
+            new ObjectObject('cg'),
+            new ObjectObject('c234'),
+            new ObjectObject('ax7w84'),
+        ], $collection->getAll());
     }
 
-    public function testApply()
+    public function testReworkingBy()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $collection->apply(function (ObjectObject $object) {
-            $object->addF();
-            return $object;
-        });
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $newCollection = $collection
+            ->reworkedBy(fn(ObjectObject $object) => (new ObjectObject($object->value . '!')));
 
-        $this->assertEquals($collection->getAll(), [
-            new ObjectObject('c234F'),
-            new ObjectObject('cgF'),
-            new ObjectObject('c234F'),
-            new ObjectObject('ax7w84F'),
-        ]);
+        //Test reworking
+        $this->assertEquals([
+            new ObjectObject('c234!'),
+            new ObjectObject('cg!'),
+            new ObjectObject('c234!'),
+            new ObjectObject('ax7w84!'),
+        ], $newCollection->getAll());
 
-        $this->expectException(ErrorException::class);
-        $collection->apply(function (ObjectObject $object) {
-            return 'F';
-        });
-    }
-
-    public function testSearchIndexesOf()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $indexes = $collection->searchIndexesOf(function (ObjectObject $object) {
-            return stripos($object->value, '23') != false;
-        });
-        $this->assertEquals($indexes, [0, 2]);
+        //Test original collection hadn't been muted
+        $this->assertEquals([
+            new ObjectObject('c234'),
+            new ObjectObject('cg'),
+            new ObjectObject('c234'),
+            new ObjectObject('ax7w84'),
+        ], $collection->getAll());
     }
 
     public function testCount()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals(4, $collection->count());
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->assertEquals($collection->count(), 4);
+
+        $newCollection = $collection->withNewOneItem(new ObjectObject('dc1`2'));
+        $this->assertEquals($newCollection->count(), 5);
     }
 
-    public function testGetByIndex()
+    public function testJsonSerialize()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals($collection->getByIndex(1), new ObjectObject('cg'));
-        $this->assertEquals($collection->getByIndex(2), new ObjectObject('c234'));
-    }
-
-    public function testGetNextIndex()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals($collection->getNextIndex(1), 2);
-        $this->assertNull($collection->getNextIndex(3));
-    }
-
-    public function testGetFirstIndex()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals($collection->getFirstIndex(), 0);
-    }
-
-    public function testSerialize()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $json = json_encode($collection, JSON_UNESCAPED_UNICODE);
-        $this->assertEquals('[{"value":"c234"},{"value":"cg"},{"value":"c234"},{"value":"ax7w84"}]', $json);
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->assertEquals(self::getArrayObjects(), $collection->getAll());
     }
 
     public function testGetFirst()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $firstItem = $collection->getFirst();
-        $this->assertEquals($firstItem, new ObjectObject('c234'));
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->assertEquals(new ObjectObject('c234'), $collection->getFirstAsserted());
+    }
 
+    public function testGetFirstException()
+    {
         $collection = new ObjectObjectCollection([]);
         $this->expectException(RuntimeException::class);
-        $firstItem = $collection->getFirst();
-    }
-
-    public function testGetLast()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $lastItem = $collection->getLast();
-        $this->assertEquals($lastItem, new ObjectObject('ax7w84'));
-
-        $collection = new ObjectObjectCollection([]);
-        $this->expectException(RuntimeException::class);
-        $lastItem = $collection->getLast();
-    }
-
-    public function testAssertCountEquals()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals($collection->assertCount(fn(int $count) => ($count === 4)), $collection);
-        $this->expectExceptionMessage('Count assert error');
-        $collection->assertCount(fn(int $count) => ($count === 2));
-    }
-
-    public function testAssertCountNotEquals()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals($collection->assertCount(fn(int $count) => ($count !== 3)), $collection);
-        $this->expectExceptionMessage('Count assert error');
-        $collection->assertCount(fn(int $count) => ($count !== 4));
-    }
-
-    public function testAssertCountGreaterThen()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $this->assertEquals($collection->assertCount(fn(int $count) => ($count > 2)), $collection);
-        $this->expectExceptionMessage('Count assert error');
-        $collection->assertCount(fn(int $count) => ($count > 5));
+        $collection->getFirstAsserted();
     }
 
     public function testGetFirstOrNull()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $firstItem = $collection->getFirstOrNull();
-        $this->assertEquals($firstItem, new ObjectObject('c234'));
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->assertEquals(new ObjectObject('c234'), $collection->getFirstOrNull());
 
         $collection = new ObjectObjectCollection([]);
         $this->assertNull($collection->getFirstOrNull());
     }
 
+    public function testGetLast()
+    {
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->assertEquals(new ObjectObject('ax7w84'), $collection->getLastAsserted());
+    }
+
+    public function testGetLastException()
+    {
+        $collection = new ObjectObjectCollection([]);
+        $this->expectException(RuntimeException::class);
+        $collection->getLastAsserted();
+    }
+
     public function testGetLastOrNull()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $lastItem = $collection->getLastOrNull();
-        $this->assertEquals($lastItem, new ObjectObject('ax7w84'));
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->assertEquals(new ObjectObject('ax7w84'), $collection->getLastOrNull());
 
         $collection = new ObjectObjectCollection([]);
         $this->assertNull($collection->getLastOrNull());
     }
 
+    public function testAssertCount()
+    {
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $first = $collection
+            ->assertCount(fn(int $count) => ($count === 4))
+            ->getFirstOrNull();
+        $this->assertEquals(new ObjectObject('c234'), $first);
+    }
+
+    public function testAssertCountException1()
+    {
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->expectException(\AssertionError::class);
+        $collection->assertCount(fn(int $count) => ($count === 5));
+    }
+
+    public function testAssertCountException2()
+    {
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $this->expectException(\TypeError::class);
+        $collection->assertCount(fn(array $count) => ($count));
+    }
+
     public function testSort()
     {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $collection->sort(fn(ObjectObject $item1, ObjectObject $item2) => (strcasecmp($item1->value, $item2->value)));
-        $this->assertEquals($collection->getAll(), [
+        $collection = new ObjectObjectCollection(self::getArrayObjects());
+        $newCollection = $collection
+            ->sortedBy(fn(ObjectObject $obj1, ObjectObject $obj2) => (strcasecmp($obj1->value, $obj2->value)));
+
+        //Test sorting
+        $this->assertEquals([
             new ObjectObject('ax7w84'),
             new ObjectObject('c234'),
             new ObjectObject('c234'),
             new ObjectObject('cg'),
-        ]);
-    }
+        ], $newCollection->getAll());
 
-    public function testReplaceItemByIndex()
-    {
-        $this->init();
-        $collection = new ObjectObjectCollection($this->arrayOfObjects);
-        $collection->replaceItemByIndex(1, new ObjectObject('aaaa'));
-        $this->assertEquals($collection->getAll(), [
+        //Test original collection hadn't been muted
+        $this->assertEquals([
             new ObjectObject('c234'),
-            new ObjectObject('aaaa'),
+            new ObjectObject('cg'),
             new ObjectObject('c234'),
             new ObjectObject('ax7w84'),
-        ]);
+        ], $collection->getAll());
     }
+
 }
