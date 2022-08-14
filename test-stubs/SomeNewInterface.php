@@ -1,6 +1,6 @@
 <?php
 
-namespace Mnemesong\CollectionGeneratorTest\tools\stubs;
+namespace Mnemesong\CollectionGeneratorStubs;
 
 interface SomeNewInterface
 {

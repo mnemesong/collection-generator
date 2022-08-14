@@ -1,9 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Mnemesong\CollectionGeneratorTest\tools\stubs;
-
-use Mnemesong\CollectionGenerator\hidden\ObjectObject;
+namespace Mnemesong\CollectionGeneratorStubs;
 
 class SomeNewObject implements SomeNewInterface
 {

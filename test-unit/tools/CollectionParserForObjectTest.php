@@ -1,8 +1,8 @@
 <?php
 namespace Mnemesong\CollectionGeneratorTest\tools;
 
-use Mnemesong\CollectionGeneratorTest\tools\stubs\CollectionParserStub;
-use Mnemesong\CollectionGeneratorTest\tools\stubs\SomeNewObject;
+use Mnemesong\CollectionGeneratorStubs\CollectionParserStub;
+use Mnemesong\CollectionGeneratorStubs\SomeNewObject;
 
 class CollectionParserForObjectTest extends \PHPUnit\Framework\TestCase
 {
@@ -39,7 +39,7 @@ class CollectionParserForObjectTest extends \PHPUnit\Framework\TestCase
         $this->assertNotFalse(stripos($this->collectionParser->getFileText(), 'class SomeNewObjectCollection'));
 
         $this->assertFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGenerator\\hidden\\ObjectObject;"));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGeneratorTest\\tools\\stubs\\SomeNewObject;"));
+        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGeneratorStubs\\SomeNewObject;"));
 
         $this->assertFalse(stripos($this->collectionParser->getFileText(), "Collection of ObjectObjects"));
         $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "Collection of SomeNewObjects"));
@@ -52,7 +52,7 @@ class CollectionParserForObjectTest extends \PHPUnit\Framework\TestCase
         $this->init();
         $this->assertEquals(
             $this->collectionParser->getTargetDirPath(SomeNewObject::class),
-            __DIR__ . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . 'collections'
+            $this->getStubsFolder() . DIRECTORY_SEPARATOR . 'collections'
         );
     }
 
@@ -60,11 +60,20 @@ class CollectionParserForObjectTest extends \PHPUnit\Framework\TestCase
     {
         $this->init();
         $ds = DIRECTORY_SEPARATOR;
-        if(file_exists(__DIR__ . $ds . 'stubs' . $ds . 'collections' . $ds . 'SomeNewObjectCollection.php')) {
-            unlink(__DIR__ . $ds . 'stubs' . $ds . 'collections' . $ds . 'SomeNewObjectCollection.php');
+        if(file_exists($this->getStubsFolder() . 'collections' . $ds . 'SomeNewObjectCollection.php')) {
+            unlink($this->getStubsFolder() . $ds . 'collections' . $ds . 'SomeNewObjectCollection.php');
         }
         $this->collectionParser->generateCollection();
-        $this->assertTrue(file_exists(__DIR__ . $ds . 'stubs' . $ds . 'collections' . $ds . 'SomeNewObjectCollection.php'));
+        $this->assertTrue(file_exists($this->getStubsFolder() . $ds . 'collections' . $ds . 'SomeNewObjectCollection.php'));
+    }
+
+    protected function getStubsFolder(): string
+    {
+        $ds = DIRECTORY_SEPARATOR;
+        $targetDirParts = explode($ds, __DIR__);
+        $targetDirParts = array_filter($targetDirParts, fn(int $index)
+        => ($index < (count($targetDirParts) - 2)), ARRAY_FILTER_USE_KEY);
+        return implode($ds, $targetDirParts) . $ds . 'test-stubs';
     }
 
 }

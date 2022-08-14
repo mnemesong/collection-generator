@@ -1,8 +1,8 @@
 <?php
 namespace Mnemesong\CollectionGeneratorTest\tools;
 
-use Mnemesong\CollectionGeneratorTest\tools\stubs\CollectionParserStub;
-use Mnemesong\CollectionGeneratorTest\tools\stubs\SomeNewInterface;
+use Mnemesong\CollectionGeneratorStubs\CollectionParserStub;
+use Mnemesong\CollectionGeneratorStubs\SomeNewInterface;
 
 class CollectionParserForInterfaceTest extends \PHPUnit\Framework\TestCase
 {
@@ -39,7 +39,7 @@ class CollectionParserForInterfaceTest extends \PHPUnit\Framework\TestCase
         $this->assertNotFalse(stripos($this->collectionParser->getFileText(), 'class SomeNewInterfaceCollection'));
 
         $this->assertFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGenerator\\hidden\\ObjectObject;"));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGeneratorTest\\tools\\stubs\\SomeNewInterface;"));
+        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGeneratorStubs\\SomeNewInterface;"));
 
         $this->assertFalse(stripos($this->collectionParser->getFileText(), "Collection of ObjectObjects"));
         $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "Collection of SomeNewInterfaces"));
@@ -50,9 +50,10 @@ class CollectionParserForInterfaceTest extends \PHPUnit\Framework\TestCase
     public function testGetTargetFilePath()
     {
         $this->init();
+        $ds = DIRECTORY_SEPARATOR;
         $this->assertEquals(
             $this->collectionParser->getTargetDirPath(SomeNewInterface::class),
-            __DIR__ . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . 'collections'
+            $this->getStubsFolder() . $ds . 'collections'
         );
     }
 
@@ -60,11 +61,20 @@ class CollectionParserForInterfaceTest extends \PHPUnit\Framework\TestCase
     {
         $this->init();
         $ds = DIRECTORY_SEPARATOR;
-        if(file_exists(__DIR__ . $ds . 'stubs' . $ds . 'collections' . $ds . 'SomeNewInterfaceCollection.php')) {
-            unlink(__DIR__ . $ds . 'stubs' . $ds . 'collections' . $ds . 'SomeNewInterfaceCollection.php');
+        if(file_exists($this->getStubsFolder() . $ds . 'collections' . $ds . 'SomeNewInterfaceCollection.php')) {
+            unlink($this->getStubsFolder() . $ds . 'collections' . $ds . 'SomeNewInterfaceCollection.php');
         }
         $this->collectionParser->generateCollection();
-        $this->assertTrue(file_exists(__DIR__ . $ds . 'stubs' . $ds . 'collections' . $ds . 'SomeNewInterfaceCollection.php'));
+        $this->assertTrue(file_exists($this->getStubsFolder() . $ds . 'collections' . $ds . 'SomeNewInterfaceCollection.php'));
+    }
+
+    protected function getStubsFolder(): string
+    {
+        $ds = DIRECTORY_SEPARATOR;
+        $targetDirParts = explode($ds, __DIR__);
+        $targetDirParts = array_filter($targetDirParts, fn(int $index)
+            => ($index < (count($targetDirParts) - 2)), ARRAY_FILTER_USE_KEY);
+        return implode($ds, $targetDirParts) . $ds . 'test-stubs';
     }
 
 }

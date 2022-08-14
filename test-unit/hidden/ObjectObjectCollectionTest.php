@@ -2,10 +2,9 @@
 declare(strict_types = 0);
 namespace Mnemesong\CollectionGeneratorTest\hidden;
 
-use ErrorException;
-use Mnemesong\CollectionGenerator\hidden\ObjectObject;
 use Mnemesong\CollectionGenerator\hidden\collection\ObjectObjectCollection;
-use Mnemesong\CollectionGeneratorTest\tools\stubs\SomeNewObject;
+use Mnemesong\CollectionGenerator\hidden\ObjectObject;
+use Mnemesong\CollectionGeneratorStubs\SomeNewObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
