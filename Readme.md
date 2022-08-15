@@ -3,6 +3,7 @@
 [![Latest Stable Version](http://poser.pugx.org/mnemesong/collection-generator/v)](https://packagist.org/packages/mnemesong/collection-generator)
 [![PHPUnit](https://github.com/mnemesong/collection-generator/actions/workflows/php-unit.yml/badge.svg)](https://github.com/mnemesong/collection-generator/actions/workflows/php-unit.yml)
 [![PHPStan-src-lvl9](https://github.com/mnemesong/collection-generator/actions/workflows/phpstan.yml/badge.svg)](https://github.com/mnemesong/collection-generator/actions/workflows/phpstan.yml)
+[![PHPStan-test-unit-lvl5](https://github.com/mnemesong/collection-generator/actions/workflows/phpstan-tests.yml/badge.svg)](https://github.com/mnemesong/collection-generator/actions/workflows/phpstan-tests.yml)
 [![PHP Version Require](http://poser.pugx.org/mnemesong/collection-generator/require/php)](https://packagist.org/packages/mnemesong/collection-generator)
 [![License](http://poser.pugx.org/mnemesong/collection-generator/license)](https://packagist.org/packages/mnemesong/collection-generator)
 
