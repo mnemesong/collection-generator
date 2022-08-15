@@ -1,4 +1,4 @@
-name: PHPStan-src-lvl9
+name: PHPStan-test-unit-lvl5
 
 on:
   push:
@@ -35,8 +35,5 @@ jobs:
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    - name: Run src lint
-      run: composer lint:src
-      
-    - name: Run stubs and generated files lint
-      run: composer lint:stubs
+    - name: Run tests linting
+      run: composer lint:unit
