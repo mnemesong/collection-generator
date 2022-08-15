@@ -23,6 +23,8 @@
     <li>Using collections is more in line with the object style, allows you to use OOP patterns for collections of objects.</li>
     <li>Using collections allows you to use lambda functions, work with sets more declaratively.</li>
     <li>This package is intended to compensate for the lack of generics and typed arrays in PHP.</li>
+    <li>Collections are completely immutable. all modifying methods create a clone of the collection with the required image
+        changed composition.</li>
 </ul>
 
 <h3>RUS</h3>
@@ -33,6 +35,8 @@
     <li>Использование коллекций больше соответствует объектному стилю, позволяет использовать ООП паттерны для наборов объектов.</li>
     <li>Использование коллекций позволяет применять люмбда-функции, работать с наборами более декларативно.</li>
     <li>Данный пакет призван компенсировать нехатку Дженериков и типизированных массивов в PHP.</li>
+    <li>Коллекции полностью иммутабельны. все изменяющие методы создают клон поллекции с требуемым образом
+        измененным составом.</li>
 </ul>
 
 ----
@@ -57,136 +61,79 @@
 
 ----
 <h2>Collections methods / Методы коллекций</h2>
+
 <h3>ENG</h3>
 <ul>
-    <li>public function add(&lt;YourClass&gt; $object): void - adding an element to the collection.</li>
-    <li>public function getAll(): &lt;YourClass&gt;[] - getting all elements from the collection.</li>
-    <li>public function removeObject(&lt;YourClass&gt; $object): void - remove an element from the collection.</li>
-    <ul>
-        <li>Non-strict comparison "==" is used for searching.</li>
-        <li>The first occurrence is removed.</li>
-    </ul>
-    <li>public function removeAll(&lt;YourClass&gt; $object): int - removal of all such elements from the collection.</li>
-    <ul>
-        <li>Non-strict comparison "==" is used for searching.</li>
-        <li>All occurrences are removed.</li>
-    </ul>
-    <li>public function filter(callable $callbackFunction): self - filters the objects in the array.</li>
-    <ul>
-        <li>The result is returned as a new collection.</li>
-        <li>The original collection remains unchanged.</li>
-    </ul>
-    <li>public function map(callable $callbackFunction): array - Converts a set from a collection to a new set and returns it.</li>
-    <ul>
-        <li>The result is returned as an array of new objects.</li>
-        <li>The original collection remains unchanged.</li>
-    </ul>
-    <li>public function apply(callable $callbackFunction): void - Applies the callback function to all elements of the collection.</li>
-    <ul>
-        <li>Modifies the elements of the original collection.</li>
-        <li>The callback function must return an object of the same type as the base type of the collection (&lt;YourClass&gt;).</li>
-    </ul>
-    <li>public function count(): int - returns the number of elements in the collection</li>
-    <li>public function getByIndex(int $index): ?&lt;YourClass&gt; - returns an element of the collection by its index</li>
-    <li>public function getNextIndex(int $index): ?int - Returns the index of the next element</li>
-    <li>public function getFirstIndex(): int - Returns the index of the first element</li>
-    <li>public function getIterator(): \Iterator - Returns an iterator</li>
-    <li>public function jsonSerialize(): &lt;YourClass&gt;[] - Returns data. available for serialization</li>
-    <li>public function getFirst(): &lt;YourClass&gt;[] - Returns the first element of the collection</li>
-    <ul>
-        <li>Throws a RuntimeException if the collection is empty</li>
-    </ul>
-    <li>public function getLast(): &lt;YourClass&gt;[] - Returns the last element of the collection</li>
-    <ul>
-        <li>Throws a RuntimeException if the collection is empty</li>
-    </ul>
-    <li>public function getFirstOrNull(): ?&lt;YourClass&gt;[] - Returns the first element of the collection, or null (if empty)</li>
-    <li>public function getLastOrNull(): ?&lt;YourClass&gt;[] - Returns the last element of the collection, or null (if empty)</li>
-</ul>
-<h4>Assertion methods</h4>
-<p>Allows you to declare checks inside filter/get call chains.
-If the collection does not meet the specified requirements, it raises an error (AssertionError by default).
-Avoids invariant calls to the next methods in the chain after filtering or removing from the collection
-multiple elements.</p>
-<ul>
-    <li>public function assertCountEquals(int $count, ?\Error $error = null): &lt;YourClass&gt;Collection
-        - Checks that the collection has exactly $count elements</li>
-    <li>public function assertCountNotEquals(int $count, ?\Error $error = null): &lt;YourClass&gt;Collection
-        - Checks that the collection contains exactly no $count elements</li>
-    <li>public function assertCountGreaterThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Collection
-        - Checks that the collection has strictly more than $count elements</li>
-    <li>public function assertCountNotGreaterThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Collection
-        - Checks that the collection has no more (less than or equal) than $count elements</li>
-    <li>public function assertCountLesserThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Collection
-        - Checks that the collection has strictly less than $count elements</li>
-    <li>public function assertCountNotLesserThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Collection
-        - Checks that the collection has at least (greater than or equal to) $count elements</li>
+    <li><code>public function withNewOneItem(&lt;YourClass&gt; $object): self</code> - Creates a collection instance, 
+        complete with specified element</li>
+    <li><code>public function withManyNewItems(&lt;YourClass&gt;[] $objects): self</code> - Creates a collection instance, 
+        complete with specified elements</li>
+    <li><code>public function getAll(): &lt;YourClass&gt;[]</code> - Get all elements from the collection.</li>
+    <li><code>public function withoutObjectsLike(&lt;YourClass&gt; $object, int $limit): void</code> - Creates 
+        a collection instance, without $limit of specified objects. Equality comparison of all fields. If $limit 
+        is negative then deletion starts from the end. If $limit = 0, then all occurrences of such an object are removed.</li>
+    <li><code>public function filteredBy(callable $callbackFunction): self</code> - Creates an instance of the collection,
+        filtered according to the specified callable function.</li>
+    <li><code>public function map(callable $callbackFunction): array</code> - Returns an array of any type given
+        applying the specified callable function to all elements of the collection.</li>
+    <li><code>public function reworkedBy(callable $callbackFunction): void</code> - Creates an instance of a collection 
+        whose elements changed by the callback function. The callable function must return an element of the same type 
+        as the elements of the collection.</li>
+    <li><code>public function sortedBy(callable $callbackFunction): void</code> - Creates an instance of a collection 
+        whose elements sorted by the callback function using the uasort() method.</li>
+    <li><code>public function count(): int</code> - Returns the number of elements in the collection</li>
+    <li><code>public function jsonSerialize(): &lt;YourClass&gt;[]</code> - Returns data. available for serialization</li>
+    <li><code>public function assertCount(callable $callbackFunction): self</code> - Applies a callback function 
+        to the count value, throws a RuntimeException if the check is not true ($callbackFunction($count) !== true), otherwise
+        returns an instance of the collection on which the method was run. Used to check the state of a collection
+        in method chains.</li>
+    <li><code>public function getFirstAsserted(): &lt;YourClass&gt;[]</code> - Returns the first element of the collection, 
+        checking if it is not empty. Throws a RuntimeException if the first element cannot be retrieved because the collection 
+        is empty.</li>
+    <li><code>public function getLastAsserted(): &lt;YourClass&gt;[]</code> - Returns the last element of the collection, 
+        checking if it is not empty. Throws a RuntimeException if the first element cannot be retrieved because 
+        the collection is empty.</li>
+    <li><code>public function getFirstOrNull(): ?&lt;YourClass&gt;[]</code> - Returns the first element of the collection, 
+        or null (if empty)</li>
+    <li><code>public function getLastOrNull(): ?&lt;YourClass&gt;[]</code> - Returns the last element of the collection, 
+        or null (if empty)</li>
 </ul>
 
 <h3>RUS</h3>
 <ul>
-    <li>public function add(&lt;YourClass&gt; $object): void - добавление элемента в коллекцию.</li>
-    <li>public function getAll(): &lt;YourClass&gt;[] - получение всех элементов из коллекции.</li>
-    <li>public function removeObject(&lt;YourClass&gt; $object): void - удаление элемента из коллекции.</li>
-    <ul>
-        <li>Для поиска используется нестрогое сравнение "==").</li>
-        <li>Удаляется первое вхождение.</li>
-    </ul>
-    <li>public function removeAll(&lt;YourClass&gt; $object): int - удаление всех подобных элементов из коллекции.</li>
-    <ul>
-        <li>Для поиска используется нестрогое сравнение "==").</li>
-        <li>Удаляются все вхождения.</li>
-    </ul>
-    <li>public function filter(callable $callbackFunction): self - фильтрует объекты в массиве.</li>
-    <ul>
-        <li>Результат возвращается в виде новой коллекции.</li>
-        <li>Исходная коллекция остается неизменной.</li>
-    </ul>
-    <li>public function map(callable $callbackFunction): array - Преобразует набор из коллекции в новый набор и возвращает его.</li>
-    <ul>
-        <li>Результат возвращается в виде массива новых объектов.</li>
-        <li>Исходная коллекция остается неизменной.</li>
-    </ul>
-    <li>public function apply(callable $callbackFunction): void - Применяет callback-функцию ко всем элементам коллекции.</li>
-    <ul>
-        <li>Изменяет элементы исходной коллекции.</li>
-        <li>Callback функиця должна возвращать объект соответствующего типа, что и базовый тип коллекции (&lt;YourClass&gt;).</li>
-    </ul>
-    <li>public function count(): int - возврящает кол-во элементов в коллекции</li>
-    <li>public function getByIndex(int $index): ?&lt;YourClass&gt; - возвращает элемент коллекции по его индексу</li>
-    <li>public function getNextIndex(int $index): ?int - Возвращает индекс следующего элемента</li>
-    <li>public function getFirstIndex(): int - Возвращает индекс первого элемента</li>
-    <li>public function getIterator(): \Iterator - Возвращает итератор</li>
-    <li>public function jsonSerialize(): &lt;YourClass&gt;[] - Возвращает данные. доступные для сериализации</li>
-    <li>public function getFirst(): &lt;YourClass&gt;[] - Возвращает первый элемент коллекции</li>
-    <ul>
-        <li>Выбрасывает RuntimeException если коллекция пуста</li>
-    </ul>
-    <li>public function getLast(): &lt;YourClass&gt;[] - Возвращает последний элемент коллекции</li>
-    <ul>
-        <li>Выбрасывает RuntimeException если коллекция пуста</li>
-    </ul>
-    <li>public function getFirstOrNull(): ?&lt;YourClass&gt;[] - Возвращает первый элемент коллекции или null (если она пуста)</li>
-    <li>public function getLastOrNull(): ?&lt;YourClass&gt;[] - Возвращает последний элемент коллекции или null (если она пуста)</li>
-</ul>
-<h4>Assertion-методы</h4>
-<p>Позволяют объявлять проверки внутри filter/get цепочек вызовов. 
-Если коллекция не соответствует указанным требованиям - вызывает ошибку (по умолчанию AssertionError).
-Позволяет избежать инвариантных вызовов следующих в цепочке методов, после фильтрации или удаления из коллекции 
-нескольких элментов.</p>
-<ul>
-    <li>public function assertCountEquals(int $count, ?\Error $error = null): &lt;YourClass&gt;Сollection 
-        - Проверяет, что в коллекции ровно $count элементов</li>
-    <li>public function assertCountNotEquals(int $count, ?\Error $error = null): &lt;YourClass&gt;Сollection 
-        - Проверяет, что в коллекции ровно не $count элементов</li>
-    <li>public function assertCountGreaterThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Сollection 
-        - Проверяет, что в коллекции строго больше чем $count элементов</li>
-    <li>public function assertCountNotGreaterThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Сollection 
-        - Проверяет, что в коллекции не больше (меньше либо равно) чем $count элементов</li>
-    <li>public function assertCountLesserThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Сollection 
-        - Проверяет, что в коллекции строго меньше чем $count элементов</li>
-    <li>public function assertCountNotLesserThen(int $count, ?\Error $error = null): &lt;YourClass&gt;Сollection 
-        - Проверяет, что в коллекции не меньше (больше либо равно) чем $count элементов</li>
+    <li><code>public function withNewOneItem(&lt;YourClass&gt; $object): self</code> - Создает экземпляр коллекции, дополненный
+        указанным элементом</li>
+    <li><code>public function withManyNewItems(&lt;YourClass&gt;[] $objects): self</code> - Создает экземпляр коллекции, 
+        дополненный указанными элементами</li>
+    <li><code>public function getAll(): &lt;YourClass&gt;[]</code> - Получение всех элементов из коллекции.</li>
+    <li><code>public function withoutObjectsLike(&lt;YourClass&gt; $object, int $limit): void</code> - Создает экземпляр коллекции,
+        без $limit указанных объектов. Сравнение по равенству всех полей. Если $limit отрицательный, то
+        удаление начинается с конца. Если $limit = 0, то удаляются все вхождения подобного объекта.</li>
+    <li><code>public function filteredBy(callable $callbackFunction): self</code> - Создает экземпляр коллекции, 
+        отфильтрованный согласно указанной callable функции.</li>
+    <li><code>public function map(callable $callbackFunction): array</code> - Возвразщает массив любого типа полученный
+        применением указанной callable функции ко всем элементам коллекции.</li>
+    <li><code>public function reworkedBy(callable $callbackFunction): void</code> - Создает экземпляр коллекции, 
+        элементы которой изменены callback-функцией. Callable функция должна возвращать элемент того-же типа, 
+        что и элементы коллекции.</li>
+    <li><code>public function sortedBy(callable $callbackFunction): void</code> - Создает экземпляр коллекции, 
+        элементы которой отсортированны callback-функцией методом uasort().</li>
+    <li><code>public function count(): int</code> - Возвращает кол-во элементов в коллекции</li>
+    <li><code>public function jsonSerialize(): &lt;YourClass&gt;[]</code> - Возвращает данные. доступные для сериализации</li>
+    <li><code>public function assertCount(callable $callbackFunction): self</code> - Применяет callback-функцию 
+        к значению count, выбрасывает RuntimeException в случае не истинности проверки ($callbackFunction($count) !== true),
+        иначе возвращает экземпляр коллекции с которой был запущен метод. Используется для проверки состояния коллекции
+        в цепочках методов.</li>
+    <li><code>public function getFirstAsserted(): &lt;YourClass&gt;[]</code> - Возвращает первый элемент коллекции, проверяя 
+        его непустоту. Выбрасывает RuntimeException, в случае, если нельзя получить первый элемент по причине пустоты 
+        коллекции.</li>
+    <li><code>public function getLastAsserted(): &lt;YourClass&gt;[]</code> - Возвращает последний элемент коллекции, 
+        проверяя его непустоту. Выбрасывает RuntimeException, в случае, если нельзя получить первый элемент по причине 
+        пустоты коллекции.</li>
+    <li><code>public function getFirstOrNull(): ?&lt;YourClass&gt;[]</code> - Возвращает первый элемент коллекции или null 
+        (если она пуста)</li>
+    <li><code>public function getLastOrNull(): ?&lt;YourClass&gt;[]</code> - Возвращает последний элемент коллекции или null 
+        (если она пуста)</li>
 </ul>
 
 ----
@@ -216,14 +163,14 @@ It is possible to use the composer terminal to generate collections. For this:
     <li>The final content of the section should look like this:</li>
 </ul>
 <div style="padding-left: 0; color: #777;">//composer.json file:</div>
-<div style="padding-left: 0">{</div>
+<div style="padding-left: 0"><code>{</code></div>
 <div style="padding-left: 20px; color: #777;">... //some content</div>
-<div style="padding-left: 20px;">"scripts": {</div>
+<div style="padding-left: 20px;"><code>"scripts": {</code></div>
 <div style="padding-left: 40px; color: #777;">... //some other scripts</div>
-<div style="padding-left: 40px;">"generate:collection": "collection-generator"</div>
-<div style="padding-left: 20px;">},</div>
+<div style="padding-left: 40px;"><code>"generate:collection": "collection-generator"</code></div>
+<div style="padding-left: 20px;"><code>},</code></div>
 <div style="padding-left: 20px; color: #777;">... //some content</div>
-<div style="padding-left: 0">}</div>
+<div style="padding-left: 0"><code>}</code></div>
 <ul>
     <li>Update the application configuration with the command: <b>composer update</b></li>
     <li>Test the script with <b>composer generate:collection</b>.
@@ -254,14 +201,14 @@ It is possible to use the composer terminal to generate collections. For this:
     <li>Итоговое содержание секции должно выглядеть так:</li>
 </ul>
 <div style="padding-left: 0; color: #777;">//composer.json файл:</div>
-<div style="padding-left: 0">{</div>
+<div style="padding-left: 0"><code>{</code></div>
 <div style="padding-left: 20px; color: #777;">... //какое-то содержание</div>
-<div style="padding-left: 20px;">"scripts": {</div>
+<div style="padding-left: 20px;"><code>"scripts": {</code></div>
 <div style="padding-left: 40px; color: #777;">... //какие-то другие скрипты</div>
-<div style="padding-left: 40px;">"generate:collection": "collection-generator"</div>
-<div style="padding-left: 20px;">},</div>
+<div style="padding-left: 40px;"><code>"generate:collection": "collection-generator"</code></div>
+<div style="padding-left: 20px;"><code>},</code></div>
 <div style="padding-left: 20px; color: #777;">... //какое-то содержание</div>
-<div style="padding-left: 0">}</div>
+<div style="padding-left: 0"><code>}</code></div>
 <ul>
     <li>Обновите конфигурацию приложения командой: <b>composer update</b></li>
     <li>Проверьте работу скрипта командой <be>composer generate:collection</be>.
