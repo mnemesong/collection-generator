@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 0);
-namespace Mnemesong\CollectionGeneratorTest\hidden;
+namespace Mnemesong\CollectionGeneratorTestUnit\hidden;
 
 use Mnemesong\CollectionGenerator\hidden\collection\ObjectObjectCollection;
 use Mnemesong\CollectionGenerator\hidden\ObjectObject;

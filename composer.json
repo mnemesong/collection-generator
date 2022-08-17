@@ -6,7 +6,8 @@
     "autoload": {
         "psr-4": {
             "Mnemesong\\CollectionGenerator\\": "src/",
-            "Mnemesong\\CollectionGeneratorTest\\": "test-unit/",
+            "Mnemesong\\CollectionGeneratorTestUnit\\": "test-unit/",
+            "Mnemesong\\CollectionGeneratorTestHelper\\": "test-helper/",
             "Mnemesong\\CollectionGeneratorStubs\\": "test-stubs/"
         }
     },

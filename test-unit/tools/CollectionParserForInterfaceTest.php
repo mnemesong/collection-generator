@@ -1,5 +1,5 @@
 <?php
-namespace Mnemesong\CollectionGeneratorTest\tools;
+namespace Mnemesong\CollectionGeneratorTestUnit\tools;
 
 use Mnemesong\CollectionGeneratorStubs\CollectionParserStub;
 use Mnemesong\CollectionGeneratorStubs\SomeNewInterface;

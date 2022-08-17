@@ -1,5 +1,5 @@
 <?php
-namespace Mnemesong\CollectionGeneratorTest\hidden;
+namespace Mnemesong\CollectionGeneratorTestUnit\hidden;
 
 use Mnemesong\CollectionGenerator\hidden\ObjectObject;
 
