@@ -3,67 +3,66 @@ namespace Mnemesong\CollectionGeneratorTestUnit\tools;
 
 use Mnemesong\CollectionGeneratorStubs\CollectionParserStub;
 use Mnemesong\CollectionGeneratorStubs\SomeNewObject;
+use Webmozart\Assert\Assert;
 
 class CollectionParserForObjectTest extends \PHPUnit\Framework\TestCase
 {
-    protected ?CollectionParserStub $collectionParser = null;
-
-    public function init()
+    protected function getCollectionParser(): CollectionParserStub
     {
-        $this->collectionParser = new CollectionParserStub(SomeNewObject::class);
+        return new CollectionParserStub(SomeNewObject::class);
     }
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
-        $this->init();
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), 'class ObjectObjectCollection'));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "namespace Mnemesong\CollectionGenerator\hidden\collection;"));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "public function __construct(array \$objects = [])"));
+        $parser = self::getCollectionParser();
+        $this->assertNotFalse(stripos($parser->getFileText(), 'class ObjectObjectCollection'));
+        $this->assertNotFalse(stripos($parser->getFileText(), "namespace Mnemesong\CollectionGenerator\hidden\collection;"));
+        $this->assertNotFalse(stripos($parser->getFileText(), "public function __construct(array \$objects = [])"));
     }
 
-    public function testReplaceNamespace()
+    public function testReplaceNamespace(): void
     {
-        $this->init();
-        $this->collectionParser->replaceNamespace('Test\Namespace');
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), 'class ObjectObjectCollection'));
-        $this->assertFalse(stripos($this->collectionParser->getFileText(), "namespace Mnemesong\CollectionGenerator\hidden\collection;"));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "namespace Test\Namespace;"));
+        $parser = self::getCollectionParser();
+        $parser->replaceNamespace('Test\Namespace');
+        $this->assertNotFalse(stripos($parser->getFileText(), 'class ObjectObjectCollection'));
+        $this->assertFalse(stripos($parser->getFileText(), "namespace Mnemesong\CollectionGenerator\hidden\collection;"));
+        $this->assertNotFalse(stripos($parser->getFileText(), "namespace Test\Namespace;"));
     }
 
-    public function testReplaceClass()
+    public function testReplaceClass(): void
     {
-        $this->init();
-        $this->collectionParser->replaceClass(SomeNewObject::class);
+        $parser = self::getCollectionParser();
+        $parser->replaceClass(SomeNewObject::class);
 
-        $this->assertFalse(stripos($this->collectionParser->getFileText(), 'class ObjectObjectCollection'));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), 'class SomeNewObjectCollection'));
+        $this->assertFalse(stripos($parser->getFileText(), 'class ObjectObjectCollection'));
+        $this->assertNotFalse(stripos($parser->getFileText(), 'class SomeNewObjectCollection'));
 
-        $this->assertFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGenerator\\hidden\\ObjectObject;"));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "use Mnemesong\\CollectionGeneratorStubs\\SomeNewObject;"));
+        $this->assertFalse(stripos($parser->getFileText(), "use Mnemesong\\CollectionGenerator\\hidden\\ObjectObject;"));
+        $this->assertNotFalse(stripos($parser->getFileText(), "use Mnemesong\\CollectionGeneratorStubs\\SomeNewObject;"));
 
-        $this->assertFalse(stripos($this->collectionParser->getFileText(), "Collection of ObjectObjects"));
-        $this->assertNotFalse(stripos($this->collectionParser->getFileText(), "Collection of SomeNewObjects"));
+        $this->assertFalse(stripos($parser->getFileText(), "Collection of ObjectObjects"));
+        $this->assertNotFalse(stripos($parser->getFileText(), "Collection of SomeNewObjects"));
 
-        $this->assertFalse(stripos($this->collectionParser->getFileText(), "ObjectObject;"));
+        $this->assertFalse(stripos($parser->getFileText(), "ObjectObject;"));
     }
 
-    public function testGetTargetFilePath()
+    public function testGetTargetFilePath(): void
     {
-        $this->init();
+        $parser = self::getCollectionParser();
         $this->assertEquals(
-            $this->collectionParser->getTargetDirPath(SomeNewObject::class),
+            $parser->getTargetDirPath(SomeNewObject::class),
             $this->getStubsFolder() . DIRECTORY_SEPARATOR . 'collections'
         );
     }
 
-    public function testGenerateCollection()
+    public function testGenerateCollection(): void
     {
-        $this->init();
+        $parser = self::getCollectionParser();
         $ds = DIRECTORY_SEPARATOR;
         if(file_exists($this->getStubsFolder() . 'collections' . $ds . 'SomeNewObjectCollection.php')) {
             unlink($this->getStubsFolder() . $ds . 'collections' . $ds . 'SomeNewObjectCollection.php');
         }
-        $this->collectionParser->generateCollection();
+        $parser->generateCollection();
         $this->assertTrue(file_exists($this->getStubsFolder() . $ds . 'collections' . $ds . 'SomeNewObjectCollection.php'));
     }
 

@@ -7,7 +7,6 @@
         "psr-4": {
             "Mnemesong\\CollectionGenerator\\": "src/",
             "Mnemesong\\CollectionGeneratorTestUnit\\": "test-unit/",
-            "Mnemesong\\CollectionGeneratorTestHelper\\": "test-helper/",
             "Mnemesong\\CollectionGeneratorStubs\\": "test-stubs/"
         }
     },
@@ -31,7 +30,7 @@
     "scripts": {
         "test:unit": "phpunit test-unit",
         "lint:src": "phpstan analyse src --level 9",
-        "lint:unit": "phpstan analyse test-unit --level 5",
+        "lint:unit": "phpstan analyse test-unit --level 9",
         "lint:stubs": "phpstan analyse test-stubs --level 9"
     },
     "bin": [

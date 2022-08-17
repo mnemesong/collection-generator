@@ -3,6 +3,7 @@ declare(strict_types = 0);
 namespace Mnemesong\CollectionGeneratorTestUnit\hidden;
 
 use Mnemesong\CollectionGenerator\hidden\ObjectObject;
+use Mnemesong\CollectionGeneratorStubs\SomeNewInterface;
 use Mnemesong\CollectionGeneratorStubs\SomeNewObject;
 use Mnemesong\CollectionGeneratorStubs\collections\SomeNewInterfaceCollection;
 use PHPUnit\Framework\TestCase;
@@ -10,7 +11,10 @@ use RuntimeException;
 
 class SomeNewInterfaceCollectionTest extends TestCase
 {
-    public static function getArrayObjects(): array
+    /**
+     * @return SomeNewInterface[]
+     */
+    protected static function getArrayObjects(): array
     {
         return [
             new SomeNewObject('c234'),
@@ -20,13 +24,13 @@ class SomeNewInterfaceCollectionTest extends TestCase
         ];
     }
 
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->assertEquals($collection->getAll(), self::getArrayObjects());
     }
 
-    public function testAdd()
+    public function testAdd(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $newCollection = $collection
@@ -52,7 +56,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
         ], $collection->getAll());
     }
 
-    public function testAddOneException()
+    public function testAddOneException(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->expectException(\TypeError::class);
@@ -61,7 +65,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
             ->withNewOneItem(new ObjectObject('as7d8'));
     }
 
-    public function addMany()
+    public function addMany(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $newCollection = $collection
@@ -88,7 +92,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
         ], $collection->getAll());
     }
 
-    public function testAddManyException()
+    public function testAddManyException(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->expectException(\InvalidArgumentException::class);
@@ -97,7 +101,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
             ->withManyNewItems([new ObjectObject('9871hkl'), new SomeNewObject('as7d8')]);
     }
 
-    public function testWithoutOneObjectLike()
+    public function testWithoutOneObjectLike(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $newCollection = $collection
@@ -138,7 +142,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
         ], $newCollection->getAll());
     }
 
-    public function testFiltering()
+    public function testFiltering(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $newCollection = $collection
@@ -160,7 +164,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
         ], $collection->getAll());
     }
 
-    public function testMapping()
+    public function testMapping(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $mapped = $collection
@@ -183,7 +187,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
         ], $collection->getAll());
     }
 
-    public function testReworkingBy()
+    public function testReworkingBy(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $newCollection = $collection
@@ -206,7 +210,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
         ], $collection->getAll());
     }
 
-    public function testCount()
+    public function testCount(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->assertEquals($collection->count(), 4);
@@ -215,26 +219,26 @@ class SomeNewInterfaceCollectionTest extends TestCase
         $this->assertEquals($newCollection->count(), 5);
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->assertEquals(self::getArrayObjects(), $collection->getAll());
     }
 
-    public function testGetFirst()
+    public function testGetFirst(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->assertEquals(new SomeNewObject('c234'), $collection->getFirstAsserted());
     }
 
-    public function testGetFirstException()
+    public function testGetFirstException(): void
     {
         $collection = new SomeNewInterfaceCollection([]);
         $this->expectException(RuntimeException::class);
         $collection->getFirstAsserted();
     }
 
-    public function testGetFirstOrNull()
+    public function testGetFirstOrNull(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->assertEquals(new SomeNewObject('c234'), $collection->getFirstOrNull());
@@ -243,20 +247,20 @@ class SomeNewInterfaceCollectionTest extends TestCase
         $this->assertNull($collection->getFirstOrNull());
     }
 
-    public function testGetLast()
+    public function testGetLast(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->assertEquals(new SomeNewObject('ax7w84'), $collection->getLastAsserted());
     }
 
-    public function testGetLastException()
+    public function testGetLastException(): void
     {
         $collection = new SomeNewInterfaceCollection([]);
         $this->expectException(RuntimeException::class);
         $collection->getLastAsserted();
     }
 
-    public function testGetLastOrNull()
+    public function testGetLastOrNull(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->assertEquals(new SomeNewObject('ax7w84'), $collection->getLastOrNull());
@@ -265,7 +269,7 @@ class SomeNewInterfaceCollectionTest extends TestCase
         $this->assertNull($collection->getLastOrNull());
     }
 
-    public function testAssertCount()
+    public function testAssertCount(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $first = $collection
@@ -274,21 +278,21 @@ class SomeNewInterfaceCollectionTest extends TestCase
         $this->assertEquals(new SomeNewObject('c234'), $first);
     }
 
-    public function testAssertCountException1()
+    public function testAssertCountException1(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->expectException(\AssertionError::class);
         $collection->assertCount(fn(int $count) => ($count === 5));
     }
 
-    public function testAssertCountException2()
+    public function testAssertCountException2(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $this->expectException(\TypeError::class);
         $collection->assertCount(fn(array $count) => ($count));
     }
 
-    public function testSort()
+    public function testSort(): void
     {
         $collection = new SomeNewInterfaceCollection(self::getArrayObjects());
         $newCollection = $collection
